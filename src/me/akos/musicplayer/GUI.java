@@ -3,6 +3,8 @@ package me.akos.musicplayer;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -10,6 +12,10 @@ public class GUI extends JFrame {
 
     public static final Color FRAME_COLOR = Color.BLACK;
     public static final Color TEXT_COLOR = Color.WHITE;
+
+    private MusicPlayer musicPlayer;
+    private JFileChooser jFileChooser;
+    private JLabel songTitle, songArtist;
 
     public GUI() {
         super("Music Player");
@@ -21,6 +27,10 @@ public class GUI extends JFrame {
         setLayout(null);
         getContentPane().setBackground(FRAME_COLOR);
 
+        musicPlayer = new MusicPlayer();
+        jFileChooser = new JFileChooser();
+        jFileChooser.setCurrentDirectory(new File("C:\\Users\\czmor\\Music\\Resentvul"));
+
         addComponents();
     }
 
@@ -31,14 +41,14 @@ public class GUI extends JFrame {
         songImage.setBounds(0, 50, getWidth() - 20, 225);
         add(songImage);
 
-        JLabel songTitle = new JLabel("Song Title");
+        songTitle = new JLabel("Song Title");
         songTitle.setBounds(0, 285, getWidth() - 10, 30);
         songTitle.setFont(new Font("Dialog", Font.BOLD, 24));
         songTitle.setForeground(TEXT_COLOR);
         songTitle.setHorizontalAlignment(SwingConstants.CENTER);
         add(songTitle);
 
-        JLabel songArtist = new JLabel("Artist");
+        songArtist = new JLabel("Artist");
         songArtist.setBounds(0, 320, getWidth() - 10, 30);
         songArtist.setFont(new Font("Dialog", Font.PLAIN, 18));
         songArtist.setForeground(TEXT_COLOR);
@@ -63,6 +73,19 @@ public class GUI extends JFrame {
         JMenu songMenu = new JMenu("Song");
         menuBar.add(songMenu);
         JMenuItem loadSong = new JMenuItem("Load Song");
+        loadSong.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jFileChooser.showOpenDialog(GUI.this);
+                File selectedFile = jFileChooser.getSelectedFile();
+
+                if (selectedFile != null) {
+                    Song song = new Song(selectedFile.getPath());
+                    musicPlayer.loadSong(song);
+                    updateSongTitleAndArtist(song);
+                }
+            }
+        });
         songMenu.add(loadSong);
 
         JMenu playListMenu = new JMenu("Play List");
@@ -114,5 +137,10 @@ public class GUI extends JFrame {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void updateSongTitleAndArtist(Song song) {
+        songTitle.setText(song.getSongTitle());
+        songArtist.setText(song.getSongArtist());
     }
 }
