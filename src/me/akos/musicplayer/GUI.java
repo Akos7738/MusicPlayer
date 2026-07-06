@@ -1,9 +1,118 @@
 package me.akos.musicplayer;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class GUI extends JFrame {
-    public GUI() {
 
+    public static final Color FRAME_COLOR = Color.BLACK;
+    public static final Color TEXT_COLOR = Color.WHITE;
+
+    public GUI() {
+        super("Music Player");
+
+        setSize(400, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setLayout(null);
+        getContentPane().setBackground(FRAME_COLOR);
+
+        addComponents();
+    }
+
+    private void addComponents() {
+        addToolbar();
+
+        JLabel songImage = new JLabel(loadImage("src/assets/Screenshot_20260706_223006_Music_Player.jpg"));
+        songImage.setBounds(0, 50, getWidth() - 20, 225);
+        add(songImage);
+
+        JLabel songTitle = new JLabel("Song Title");
+        songTitle.setBounds(0, 285, getWidth() - 10, 30);
+        songTitle.setFont(new Font("Dialog", Font.BOLD, 24));
+        songTitle.setForeground(TEXT_COLOR);
+        songTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        add(songTitle);
+
+        JLabel songArtist = new JLabel("Artist");
+        songArtist.setBounds(0, 320, getWidth() - 10, 30);
+        songArtist.setFont(new Font("Dialog", Font.PLAIN, 18));
+        songArtist.setForeground(TEXT_COLOR);
+        songArtist.setHorizontalAlignment(SwingConstants.CENTER);
+        add(songArtist);
+
+        JSlider playbackSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+        playbackSlider.setBounds(getWidth()/2 - 300/2, 365, 300, 40);
+        playbackSlider.setBackground(null);
+        add(playbackSlider);
+
+        addPlaybackBtns();
+    }
+
+    private void addToolbar() {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setBounds(0, 0, getWidth(), 20);
+        toolBar.setFloatable(false);
+
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu songMenu = new JMenu("Song");
+        menuBar.add(songMenu);
+        JMenuItem loadSong = new JMenuItem("Load Song");
+        songMenu.add(loadSong);
+
+        JMenu playListMenu = new JMenu("Play List");
+        menuBar.add(playListMenu);
+        JMenuItem createPlaylist = new JMenuItem("Create Playlist");
+        playListMenu.add(createPlaylist);
+        JMenuItem loadPlaylist = new JMenuItem("Load Playlist");
+        playListMenu.add(loadPlaylist);
+
+        toolBar.add(menuBar);
+
+        add(toolBar);
+    }
+
+    private void addPlaybackBtns() {
+        JPanel playbackBtns = new JPanel();
+        playbackBtns.setBounds(0, 435, getWidth() - 10, 80);
+        playbackBtns.setBackground(null);
+
+        JButton prevBtn = new JButton(loadImage("src/assets/previous.png"));
+        prevBtn.setBorderPainted(false);
+        prevBtn.setBackground(null);
+        playbackBtns.add(prevBtn);
+
+        JButton playBtn = new JButton(loadImage("src/assets/play.png"));
+        playBtn.setBorderPainted(false);
+        playBtn.setBackground(null);
+        playbackBtns.add(playBtn);
+
+        JButton pauseBtn = new JButton(loadImage("src/assets/pause.png"));
+        pauseBtn.setBorderPainted(false);
+        pauseBtn.setBackground(null);
+        pauseBtn.setVisible(false);
+        playbackBtns.add(pauseBtn);
+
+        JButton nextBtn = new JButton(loadImage("src/assets/next.png"));
+        nextBtn.setBorderPainted(false);
+        nextBtn.setBackground(null);
+        playbackBtns.add(nextBtn);
+
+        add(playbackBtns);
+    }
+
+    private ImageIcon loadImage(String imagePath) {
+        try {
+            BufferedImage image = ImageIO.read(new File(imagePath));
+            return new ImageIcon(image);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
