@@ -16,6 +16,7 @@ public class GUI extends JFrame {
     private MusicPlayer musicPlayer;
     private JFileChooser jFileChooser;
     private JLabel songTitle, songArtist;
+    private JPanel playbackBtns;
 
     public GUI() {
         super("Music Player");
@@ -83,6 +84,8 @@ public class GUI extends JFrame {
                     Song song = new Song(selectedFile.getPath());
                     musicPlayer.loadSong(song);
                     updateSongTitleAndArtist(song);
+                    enablePause();
+
                 }
             }
         });
@@ -101,7 +104,7 @@ public class GUI extends JFrame {
     }
 
     private void addPlaybackBtns() {
-        JPanel playbackBtns = new JPanel();
+        playbackBtns = new JPanel();
         playbackBtns.setBounds(0, 435, getWidth() - 10, 80);
         playbackBtns.setBackground(null);
 
@@ -142,5 +145,25 @@ public class GUI extends JFrame {
     private void updateSongTitleAndArtist(Song song) {
         songTitle.setText(song.getSongTitle());
         songArtist.setText(song.getSongArtist());
+    }
+
+    private void enablePause() {
+        JButton playBtn = (JButton) playbackBtns.getComponent(1);
+        JButton pauseBtn = (JButton) playbackBtns.getComponent(2);
+
+        playBtn.setVisible(false);
+        playBtn.setEnabled(false);
+        pauseBtn.setVisible(true);
+        pauseBtn.setEnabled(true);
+    }
+
+    private void enablePlay() {
+        JButton playBtn = (JButton) playbackBtns.getComponent(1);
+        JButton pauseBtn = (JButton) playbackBtns.getComponent(2);
+
+        playBtn.setVisible(true);
+        playBtn.setEnabled(true);
+        pauseBtn.setVisible(false);
+        pauseBtn.setEnabled(false);
     }
 }
