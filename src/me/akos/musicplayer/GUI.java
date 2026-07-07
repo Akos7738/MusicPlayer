@@ -2,6 +2,7 @@ package me.akos.musicplayer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +32,7 @@ public class GUI extends JFrame {
         musicPlayer = new MusicPlayer();
         jFileChooser = new JFileChooser();
         jFileChooser.setCurrentDirectory(new File("C:\\Users\\czmor\\Music\\Resentvul"));
-
+        jFileChooser.setFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
         addComponents();
     }
 
@@ -77,10 +78,10 @@ public class GUI extends JFrame {
         loadSong.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jFileChooser.showOpenDialog(GUI.this);
+                int result = jFileChooser.showOpenDialog(GUI.this);
                 File selectedFile = jFileChooser.getSelectedFile();
 
-                if (selectedFile != null) {
+                if (result == JFileChooser.APPROVE_OPTION && selectedFile != null) {
                     Song song = new Song(selectedFile.getPath());
                     musicPlayer.loadSong(song);
                     updateSongTitleAndArtist(song);
@@ -116,12 +117,26 @@ public class GUI extends JFrame {
         JButton playBtn = new JButton(loadImage("src/assets/play.png"));
         playBtn.setBorderPainted(false);
         playBtn.setBackground(null);
+        playBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enablePause();
+                musicPlayer.playCurrentSong();
+            }
+        });
         playbackBtns.add(playBtn);
 
         JButton pauseBtn = new JButton(loadImage("src/assets/pause.png"));
         pauseBtn.setBorderPainted(false);
         pauseBtn.setBackground(null);
         pauseBtn.setVisible(false);
+        pauseBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enablePlay();
+                musicPlayer.pauseSong();
+            }
+        });
         playbackBtns.add(pauseBtn);
 
         JButton nextBtn = new JButton(loadImage("src/assets/next.png"));
