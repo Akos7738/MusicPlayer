@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Hashtable;
 
 public class GUI extends JFrame {
 
@@ -18,6 +19,7 @@ public class GUI extends JFrame {
     private JFileChooser jFileChooser;
     private JLabel songTitle, songArtist;
     private JPanel playbackBtns;
+    private JSlider playbackSlider;
 
     public GUI() {
         super("Music Player");
@@ -57,7 +59,7 @@ public class GUI extends JFrame {
         songArtist.setHorizontalAlignment(SwingConstants.CENTER);
         add(songArtist);
 
-        JSlider playbackSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+        playbackSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
         playbackSlider.setBounds(getWidth()/2 - 300/2, 365, 300, 40);
         playbackSlider.setBackground(null);
         add(playbackSlider);
@@ -85,6 +87,7 @@ public class GUI extends JFrame {
                     Song song = new Song(selectedFile.getPath());
                     musicPlayer.loadSong(song);
                     updateSongTitleAndArtist(song);
+                    updatePlaybackSlider(song);
                     enablePause();
 
                 }
@@ -180,5 +183,24 @@ public class GUI extends JFrame {
         playBtn.setEnabled(true);
         pauseBtn.setVisible(false);
         pauseBtn.setEnabled(false);
+    }
+
+    private void updatePlaybackSlider(Song song) {
+        playbackSlider.setMaximum(song.getMp3File().getFrameCount());
+        Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
+
+        JLabel labelBeginning = new JLabel("00:00");
+        labelBeginning.setFont(new Font("Dialog", Font.BOLD, 18));
+        labelBeginning.setForeground(TEXT_COLOR);
+
+        JLabel labelEnd = new JLabel(song.getSongLength());
+        labelEnd.setFont(new Font("Dialog", Font.BOLD, 18));
+        labelEnd.setForeground(TEXT_COLOR);
+
+        labelTable.put(0, labelBeginning);
+        labelTable.put(song.getMp3File().getFrameCount(), labelEnd);
+
+        playbackSlider.setLabelTable(labelTable);
+        playbackSlider.setPaintLabels(true);
     }
 }
