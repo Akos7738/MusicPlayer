@@ -6,6 +6,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Hashtable;
@@ -31,7 +33,7 @@ public class GUI extends JFrame {
         setLayout(null);
         getContentPane().setBackground(FRAME_COLOR);
 
-        musicPlayer = new MusicPlayer();
+        musicPlayer = new MusicPlayer(this);
         jFileChooser = new JFileChooser();
         jFileChooser.setCurrentDirectory(new File("C:\\Users\\czmor\\Music\\Resentvul"));
         jFileChooser.setFileFilter(new FileNameExtensionFilter("MP3", "mp3"));
@@ -62,6 +64,22 @@ public class GUI extends JFrame {
         playbackSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
         playbackSlider.setBounds(getWidth()/2 - 300/2, 365, 300, 40);
         playbackSlider.setBackground(null);
+        playbackSlider.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                musicPlayer.pauseSong();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                JSlider source = (JSlider) e.getSource();
+                int frame = source.getValue();
+                musicPlayer.setCurrentFrame(frame);
+                musicPlayer.setCurrentTimeMilli((int) (frame / (1.8 * musicPlayer.getCurrentSong().getFrameRate())));
+                musicPlayer.playCurrentSong();
+                enablePause();
+            }
+        });
         add(playbackSlider);
 
         addPlaybackBtns();
@@ -148,6 +166,10 @@ public class GUI extends JFrame {
         playbackBtns.add(nextBtn);
 
         add(playbackBtns);
+    }
+
+    public void setPlaybackSliderValue(int frame) {
+        playbackSlider.setValue(frame);
     }
 
     private ImageIcon loadImage(String imagePath) {
